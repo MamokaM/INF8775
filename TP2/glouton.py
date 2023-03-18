@@ -2,6 +2,9 @@ import random
 import math
 import copy
 
+# function to read coordinate points of a file, 
+# put them in a list 
+# and return the list 
 def readFile(file):
     points = []
     f = open(file, "r")
@@ -13,20 +16,29 @@ def readFile(file):
     
     return points
 
- 
+def display(initialP, algoResult):
 
+    result = [initialP.index(i) for i in algoResult]
+    print("result before concatenation", result)
+    index_0 = result.index(0)
+    result_0 = result[index_0:] + result[1:index_0+1]
+    print("result after concatenation",result_0)
+
+# Greedy algo
 def greedy(points):
     s = []
     nb_points = len(points)
-    nb = random.randint(0,nb_points-1) # de 0 à 4
-    s.append(points[nb])
-    points.remove(points[nb])
+    nb = random.randint(0,nb_points-1)
+    firstPoint = points[nb]
+    s.append(firstPoint)
+    points.remove(firstPoint)
 
     while ( len(points)!=0 ):
         min = 2000
         minPoint = []
         for point in points:
-            distance = math.dist(s[len(s)-1], point)
+            distance = round(math.dist(s[len(s)-1], point))
+            #print("Distance ",distance, " between ", s[len(s)-1], " and ", point )
             if (distance < min) :
                 min = distance
                 minPoint = point
@@ -34,15 +46,30 @@ def greedy(points):
         s.append(minPoint)
         points.remove(minPoint)
 
+    s.append(firstPoint)
     return s
-    
-totalPoints = readFile("n5_0")
-print(totalPoints)
-s = greedy(totalPoints)
-print("s :", s)
 
-totalPoints = readFile("n5_0")
-print("points :", totalPoints)
+
+####### Greedy results #######
+initialPoints = readFile("n5_0")
+print("Initial points :",initialPoints)
+
+greedy_result = greedy(initialPoints)
+print("greedy :", greedy_result)
+
+# display 
+initialPoints = readFile("n5_0")
+display(initialPoints,greedy_result)
+
+
+####### Dynamic prog #######
+# initialPoints = readFile("n5_0")
+# print("Initial points :",initialPoints)
+
+
+
+# totalPoints = readFile("n5_0")
+# print("points :", totalPoints)
 
 
 ### ALGORITHME DE PROGRAMMATION DYNAMIQUE
