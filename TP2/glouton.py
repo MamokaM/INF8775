@@ -102,6 +102,59 @@ def greedy(points):
 #                 j = point
 #         return j
 
+# def dynProg(points): 
+
+#     # matrix of distances
+#     dis = [[round(math.dist(points[i], points[j])) for j in range(len(points))] for i in range(len(points))] 
+#     print(dis) 
+
+#     # list of vertices to find combination
+#     vertex = []
+#     for i in range(1,len(points)):
+#         vertex.append(i)
+#     #print(vertex)
+
+#     # list of all possible combinations
+#     final_comb = []
+#     for num in range(0, len(points)-1):
+#         combination = list(combinations(vertex,num))
+#         #comb_list = [list(comb) for comb in combination]
+#         #print("combination :",combination)
+#         final_comb+=combination
+#     #print("final :",final_comb)
+
+#     # dict of i, S and D[i][s]
+#     D ={i: {j: float('inf') for j in final_comb} for i in range(1, len(points))}
+#     #print(D)
+
+#     # initialize initial values
+#     for i in D:
+#         D[i][()]= dis[i][0]
+    
+#     #calculate D[i][S]
+#     for i in D:
+#         for S in D[i]:
+#             # if len(S)==0:
+#             #     D[i][S]= dis[i][0]
+#             # else:
+#             if len(S)!=0:
+#                 min = float('inf')
+#                 for j in S :
+#                     # print("S :",S)
+#                     # print("i",i)
+#                     # print("j :",j)
+#                     # print("S-j :",tuple(s for s in S if s != j))
+#                     # print(dis[i][j], " ", D[j][tuple(s for s in S if s != j)], "" ,dis[i][j] + D[j][tuple(s for s in S if s != j)])
+#                     if (dis[i][j]==0):
+#                         D[i][S] = None
+#                     elif dis[i][j] + D[j][tuple(s for s in S if s != j)] < min :
+#                         min = dis[i][j] + D[j][tuple(s for s in S if s != j)] 
+                
+#                 D[i][S] = min
+                    
+
+#     print(D)        
+
 def dynProg(points): 
 
     # matrix of distances
@@ -123,38 +176,53 @@ def dynProg(points):
         final_comb+=combination
     #print("final :",final_comb)
 
-    # dict of i, S and D[i][s]
-    D ={i: {j: float('inf') for j in final_comb} for i in range(1, len(points))}
-    #print(D)
-
-    # initialize initial values
-    for i in D:
-        D[i][()]= dis[i][0]
+    # dict of S, i and D[i][s]
+    D = {j: {i: float('inf') for i in range(1,  len(points))} for j in final_comb}
+   
     
-    #calculate D[i][S]
-    for i in D:
-        for S in D[i]:
-            # if len(S)==0:
-            #     D[i][S]= dis[i][0]
-            # else:
-            if len(S)!=0:
+    # #calculate D[i][S]
+    for S in D:
+        for i in D[S]:
+            if len(S)==0:
+                D[S][i] = dis[0][i]
+            else:
                 min = float('inf')
-                for j in S :
-                    # print("S :",S)
-                    # print("i",i)
-                    # print("j :",j)
-                    # print("S-j :",tuple(s for s in S if s != j))
-                    # print(dis[i][j], " ", D[j][tuple(s for s in S if s != j)], "" ,dis[i][j] + D[j][tuple(s for s in S if s != j)])
+                for j in S:
+
                     if (dis[i][j]==0):
-                        D[i][S] = None
-                    elif dis[i][j] + D[j][tuple(s for s in S if s != j)] < min :
-                        min = dis[i][j] + D[j][tuple(s for s in S if s != j)] 
+                        min = None
+
+
+                    elif min and (dis[i][j] + D[tuple(s for s in S if s != j)][j] < min) :
+                        min = dis[i][j] + D[tuple(s for s in S if s != j)][j] 
                 
-                D[i][S] = min
+                D[S][i] = min
+
+
+
+    print(D)            
+    # for i in D:
+    #     for S in D[i]:
+    #         # if len(S)==0:
+    #         #     D[i][S]= dis[i][0]
+    #         # else:
+    #         if len(S)!=0:
+    #             min = float('inf')
+    #             for j in S :
+    #                 # print("S :",S)
+    #                 # print("i",i)
+    #                 # print("j :",j)
+    #                 # print("S-j :",tuple(s for s in S if s != j))
+    #                 # print(dis[i][j], " ", D[j][tuple(s for s in S if s != j)], "" ,dis[i][j] + D[j][tuple(s for s in S if s != j)])
+    #                 if (dis[i][j]==0):
+    #                     D[i][S] = None
+    #                 elif dis[i][j] + D[j][tuple(s for s in S if s != j)] < min :
+    #                     min = dis[i][j] + D[j][tuple(s for s in S if s != j)] 
+                
+    #             D[i][S] = min
                     
 
-    print(D)        
-
+    # print(D)  
 
 ####### Greedy results #######
 # initialPoints = readFile("n5_0")
