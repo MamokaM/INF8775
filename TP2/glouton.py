@@ -1,6 +1,7 @@
 import random
 import math
 import copy
+from itertools import combinations
 
 # function to read coordinate points of a file, 
 # put them in a list 
@@ -22,7 +23,8 @@ def display(initialP, algoResult):
     print("result before concatenation", result)
     index_0 = result.index(0)
     result_0 = result[index_0:] + result[1:index_0+1]
-    print("result after concatenation",result_0)
+    if result_0[1] > result_0[len(result_0)-2] : result_0.reverse()
+    print("result after concatenation ",result_0)
 
 # Greedy algo
 def greedy(points):
@@ -49,22 +51,53 @@ def greedy(points):
     s.append(firstPoint)
     return s
 
+def dynProg(points):
+    #combinations
+    final_comb = []
+    for num in range(1, len(points)-2):
+        
+        combination = list(combinations(points,num))
+        #comb_list = [list(comb) for comb in combination]
+        print("combination :",combination)
+        final_comb+=combination
+    print("final :",final_comb)
+    
+    ## D[i][j]
+    value = 2000
+    dis = [[value for j in range(len(final_comb))] for i in range(len(points))]
+    
+    for i in range(len(points)):
+        for j in range(0,len(final_comb)):
+            print("j",j)
+            if j == 0:
+                print("S :",final_comb[j])
+                dis[i][j] = round(math.dist(points[i], points[0])) 
+            #else:
+                #dis[i][j] =round(math.dist(points[i], points[j])) + dis[i][j]
+    print(dis)
+    
+
+
+     
+  
+    
 
 ####### Greedy results #######
-initialPoints = readFile("n5_0")
-print("Initial points :",initialPoints)
+# initialPoints = readFile("n5_0")
+# print("Initial points :",initialPoints)
 
-greedy_result = greedy(initialPoints)
-print("greedy :", greedy_result)
+# greedy_result = greedy(initialPoints)
+# print("greedy :", greedy_result)
 
-# display 
-initialPoints = readFile("n5_0")
-display(initialPoints,greedy_result)
+# # display 
+# initialPoints = readFile("n5_0")
+# display(initialPoints,greedy_result)
 
 
 ####### Dynamic prog #######
-# initialPoints = readFile("n5_0")
-# print("Initial points :",initialPoints)
+initialPoints = readFile("n5_0")
+print("Initial points :",initialPoints)
+dynProg(initialPoints)
 
 
 
