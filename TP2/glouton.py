@@ -2,6 +2,7 @@ import random
 import math
 import copy
 from itertools import combinations
+from itertools import permutations
 
 # function to read coordinate points of a file, 
 # put them in a list 
@@ -36,7 +37,7 @@ def greedy(points):
     points.remove(firstPoint)
 
     while ( len(points)!=0 ):
-        min = 2000
+        min = float('inf')
         minPoint = []
         for point in points:
             distance = round(math.dist(s[len(s)-1], point))
@@ -51,36 +52,109 @@ def greedy(points):
     s.append(firstPoint)
     return s
 
-def dynProg(points):
-    #combinations
+
+
+# def dynProg(points):
+
+#     ### ÉTAPE 1: DÉFINITION DU TABLEAU
+#     #combinations
+#     final_comb = []
+#     for num in range(1, len(points)-2):
+#         combination = list(combinations(points,num))
+#         #comb_list = [list(comb) for comb in combination]
+#         print("combination :",combination)
+#         final_comb+=combination
+#     print("final :",final_comb)
+    
+#     ## D[i][j]
+#     value = float('inf')
+#     dis = [[value for j in range(len(final_comb))] for i in range(len(points))]
+    
+    
+#     for j in range(0,len(final_comb)-1):
+#         print("S :",final_comb[j])
+#         for i in range(0,len(points)-1):
+#             if j == 0:
+#                 dis[i][j] = round(math.dist(points[i], points[0])) 
+#             #else:
+#                 #dis[i][j] = round(math.dist(points[i], points[j])) + dis[i][j]
+#     print(dis)
+
+#     ### ÉTAPE 2 : DÉFINITION DE LA RÉCURRENCE
+#     def recc(i = [], S = [], k = []):
+#         D = 0
+#         if len(S) == 0 :
+#             D = round(math.dist(i, k))
+#         else :
+#             j = findMin(i, S)
+#             Dij = round(math.dist(i, j))
+#             S.remove(j)
+#             recc(j, S, k)
+#         return D
+
+#     def findMin(i = [], S = []):
+#         j = []
+#         min = float('inf')
+#         for point in S : 
+#             dist = round(math.dist(i, point))
+#             if (dist < min):
+#                 min = dist
+#                 j = point
+#         return j
+
+def dynProg(points): 
+
+    # matrix of distances
+    dis = [[round(math.dist(points[i], points[j])) for j in range(len(points))] for i in range(len(points))] 
+    print(dis) 
+
+    # list of vertices to find combination
+    vertex = []
+    for i in range(1,len(points)):
+        vertex.append(i)
+    #print(vertex)
+
+    # list of all possible combinations
     final_comb = []
-    for num in range(1, len(points)-2):
-        
-        combination = list(combinations(points,num))
+    for num in range(0, len(points)-1):
+        combination = list(combinations(vertex,num))
         #comb_list = [list(comb) for comb in combination]
-        print("combination :",combination)
+        #print("combination :",combination)
         final_comb+=combination
-    print("final :",final_comb)
-    
-    ## D[i][j]
-    value = 2000
-    dis = [[value for j in range(len(final_comb))] for i in range(len(points))]
-    
-    for i in range(len(points)):
-        for j in range(0,len(final_comb)):
-            print("j",j)
-            if j == 0:
-                print("S :",final_comb[j])
-                dis[i][j] = round(math.dist(points[i], points[0])) 
-            #else:
-                #dis[i][j] =round(math.dist(points[i], points[j])) + dis[i][j]
-    print(dis)
-    
+    #print("final :",final_comb)
 
+    # dict of i, S and D[i][s]
+    D ={i: {j: float('inf') for j in final_comb} for i in range(1, len(points))}
+    #print(D)
 
-     
-  
+    # initialize initial values
+    for i in D:
+        D[i][()]= dis[i][0]
     
+    #calculate D[i][S]
+    for i in D:
+        for S in D[i]:
+            # if len(S)==0:
+            #     D[i][S]= dis[i][0]
+            # else:
+            if len(S)!=0:
+                min = float('inf')
+                for j in S :
+                    # print("S :",S)
+                    # print("i",i)
+                    # print("j :",j)
+                    # print("S-j :",tuple(s for s in S if s != j))
+                    # print(dis[i][j], " ", D[j][tuple(s for s in S if s != j)], "" ,dis[i][j] + D[j][tuple(s for s in S if s != j)])
+                    if (dis[i][j]==0):
+                        D[i][S] = None
+                    elif dis[i][j] + D[j][tuple(s for s in S if s != j)] < min :
+                        min = dis[i][j] + D[j][tuple(s for s in S if s != j)] 
+                
+                D[i][S] = min
+                    
+
+    print(D)        
+
 
 ####### Greedy results #######
 # initialPoints = readFile("n5_0")
@@ -93,11 +167,13 @@ def dynProg(points):
 # initialPoints = readFile("n5_0")
 # display(initialPoints,greedy_result)
 
-
 ####### Dynamic prog #######
 initialPoints = readFile("n5_0")
 print("Initial points :",initialPoints)
 dynProg(initialPoints)
+# s=0
+# result = travellingSalesmanProblem(initialPoints,s)
+# print(result)
 
 
 
