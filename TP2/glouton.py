@@ -155,11 +155,12 @@ def greedy(points):
 
 #     print(D)        
 
+##### FINAL 
 def dynProg(points): 
 
     # matrix of distances
     dis = [[round(math.dist(points[i], points[j])) for j in range(len(points))] for i in range(len(points))] 
-    print(dis) 
+    #print(dis) 
 
     # list of vertices to find combination
     vertex = []
@@ -171,16 +172,15 @@ def dynProg(points):
     final_comb = []
     for num in range(0, len(points)-1):
         combination = list(combinations(vertex,num))
-        #comb_list = [list(comb) for comb in combination]
-        #print("combination :",combination)
         final_comb+=combination
     #print("final :",final_comb)
 
     # dict of S, i and D[i][s]
     D = {j: {i: float('inf') for i in range(1,  len(points))} for j in final_comb}
    
-    
-    # #calculate D[i][S]
+    min_path_dis = float('inf')
+    final_path = (0,) 
+    # #calculate D[S][i]
     for S in D:
         for i in D[S]:
             if len(S)==0:
@@ -192,37 +192,26 @@ def dynProg(points):
                     if (dis[i][j]==0):
                         min = None
 
-
-                    elif min and (dis[i][j] + D[tuple(s for s in S if s != j)][j] < min) :
+                    elif (min and (dis[i][j] + D[tuple(s for s in S if s != j)][j] < min)) :
                         min = dis[i][j] + D[tuple(s for s in S if s != j)][j] 
                 
                 D[S][i] = min
+            
+            
+            
 
+            if (len(S)== len(points)-2) and (D[S][i]!=None) and (dis[1][i]+D[S][i] <min_path_dis):
+                # print(S)
+                # print(i)
+                # print(dis[1][i], " ",D[S][i])
+                # print(dis[1][i]+D[S][i])
+                min_path_dis = dis[1][i]+D[S][i]
+                final_path = (0,)+ (i,) + S
 
-
-    print(D)            
-    # for i in D:
-    #     for S in D[i]:
-    #         # if len(S)==0:
-    #         #     D[i][S]= dis[i][0]
-    #         # else:
-    #         if len(S)!=0:
-    #             min = float('inf')
-    #             for j in S :
-    #                 # print("S :",S)
-    #                 # print("i",i)
-    #                 # print("j :",j)
-    #                 # print("S-j :",tuple(s for s in S if s != j))
-    #                 # print(dis[i][j], " ", D[j][tuple(s for s in S if s != j)], "" ,dis[i][j] + D[j][tuple(s for s in S if s != j)])
-    #                 if (dis[i][j]==0):
-    #                     D[i][S] = None
-    #                 elif dis[i][j] + D[j][tuple(s for s in S if s != j)] < min :
-    #                     min = dis[i][j] + D[j][tuple(s for s in S if s != j)] 
-                
-    #             D[i][S] = min
-                    
-
-    # print(D)  
+   
+    print(D) 
+    print(final_path)           
+ 
 
 ####### Greedy results #######
 # initialPoints = readFile("n5_0")
