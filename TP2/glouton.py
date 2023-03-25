@@ -160,7 +160,7 @@ def dynProg(points):
 
     # matrix of distances
     dis = [[round(math.dist(points[i], points[j])) for j in range(len(points))] for i in range(len(points))] 
-    #print(dis) 
+    print(dis) 
 
     # list of vertices to find combination
     vertex = []
@@ -197,21 +197,77 @@ def dynProg(points):
                 
                 D[S][i] = min
             
-            
-            
-
-            if (len(S)== len(points)-2) and (D[S][i]!=None) and (dis[1][i]+D[S][i] <min_path_dis):
+            # find final path
+            if (len(S)== len(points)-2) and (D[S][i]!=None): #and (dis[1][i]+D[S][i] <min_path_dis):
                 # print(S)
                 # print(i)
                 # print(dis[1][i], " ",D[S][i])
                 # print(dis[1][i]+D[S][i])
                 min_path_dis = dis[1][i]+D[S][i]
-                final_path = (0,)+ (i,) + S
+                final_path = (0,)+ (i,) + S +(0,)
 
-   
-    print(D) 
-    print(final_path)           
+    #print(D) 
+    return final_path           
+
+def MST(points):
+    
+    result = []
+    result.append(points[0])
+    points.remove(points[0])
+    tree = []
+
  
+    while(len(points)!=0):
+        
+        min_dis = float("inf")
+        start =[]
+        end=[]
+        for i in range(0,len(result)) :
+                for j in range(0,len(points)):
+                   
+                    distance =  round(math.dist(result[i], points[j]))
+                    if distance < min_dis:
+                        min_dis=distance
+
+                        start = result[i]
+                        end = points[j]
+                        
+
+        result.append(end)
+        points.remove(end)
+        tree.append((start,end,min_dis))
+    print(tree)
+    return(tree)
+
+def approx_algo(points):
+
+    #mst
+    mst_tree = MST(points)
+
+    #random vertex
+    nb = random.randint(0,len(points)-1)
+
+    root = mst[nb]
+    binary_tree = {}
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
 
 ####### Greedy results #######
 # initialPoints = readFile("n5_0")
@@ -225,17 +281,18 @@ def dynProg(points):
 # display(initialPoints,greedy_result)
 
 ####### Dynamic prog #######
-initialPoints = readFile("n5_0")
-print("Initial points :",initialPoints)
-dynProg(initialPoints)
-# s=0
-# result = travellingSalesmanProblem(initialPoints,s)
-# print(result)
+# initialPoints = readFile("N5_0")
+# print("Initial points :",initialPoints)
+# dynProg_result = dynProg(initialPoints)
+# print("dynamic prog :",dynProg_result)
 
 
+####### Approximating prog #######
 
-# totalPoints = readFile("n5_0")
-# print("points :", totalPoints)
+totalPoints = readFile("n5_0")
+print("points :", totalPoints)
+MST(totalPoints)
+
 
 
 ### ALGORITHME DE PROGRAMMATION DYNAMIQUE
