@@ -13,13 +13,10 @@ def readFile(file):
     lines = f.readlines()
     for i in range (1,len(lines)):
         lst = lines[i].strip().split()
-        #points.append((int(lst[0]),int(lst[1])))
         points.append([eval(i) for i in lst])
-    
     return points
 
 def display(initialP, algoResult):
-
     result = [initialP.index(i) for i in algoResult]
     print("result before concatenation", result)
     index_0 = result.index(0)
@@ -27,7 +24,7 @@ def display(initialP, algoResult):
     if result_0[1] > result_0[len(result_0)-2] : result_0.reverse()
     print("result after concatenation ",result_0)
 
-# Greedy algo
+# greedy
 def greedy(points):
     s = []
     nb_points = len(points)
@@ -35,49 +32,43 @@ def greedy(points):
     firstPoint = points[nb]
     s.append(firstPoint)
     points.remove(firstPoint)
-
     while ( len(points)!=0 ):
         min = float('inf')
         minPoint = []
         for point in points:
             distance = round(math.dist(s[len(s)-1], point))
-            #print("Distance ",distance, " between ", s[len(s)-1], " and ", point )
             if (distance < min) :
                 min = distance
                 minPoint = point
-            
         s.append(minPoint)
         points.remove(minPoint)
-
     s.append(firstPoint)
     return s      
 
-##### FINAL 
+# dynamic programmation
 def dynProg(points): 
 
     # matrix of distances
     dis = [[round(math.dist(points[i], points[j])) for j in range(len(points))] for i in range(len(points))] 
-    print(dis) 
 
     # list of vertices to find combination
     vertex = []
     for i in range(1,len(points)):
         vertex.append(i)
-    #print(vertex)
 
     # list of all possible combinations
     final_comb = []
     for num in range(0, len(points)-1):
         combination = list(combinations(vertex,num))
-        final_comb+=combination
-    #print("final :",final_comb)
+        final_comb += combination
 
     # dict of S, i and D[i][s]
     D = {j: {i: float('inf') for i in range(1,  len(points))} for j in final_comb}
    
     min_path_dis = float('inf')
     final_path = (0,) 
-    # #calculate D[S][i]
+
+    # calculate D[S][i]
     for S in D:
         for i in D[S]:
             if len(S)==0:
@@ -85,54 +76,40 @@ def dynProg(points):
             else:
                 min = float('inf')
                 for j in S:
-
                     if (dis[i][j]==0):
                         min = None
-
                     elif (min and (dis[i][j] + D[tuple(s for s in S if s != j)][j] < min)) :
                         min = dis[i][j] + D[tuple(s for s in S if s != j)][j] 
-                
                 D[S][i] = min
             
             # find final path
-            if (len(S)== len(points)-2) and (D[S][i]!=None): #and (dis[1][i]+D[S][i] <min_path_dis):
-                # print(S)
-                # print(i)
-                # print(dis[1][i], " ",D[S][i])
-                # print(dis[1][i]+D[S][i])
+            if (len(S)== len(points)-2) and (D[S][i]!=None):
                 min_path_dis = dis[1][i]+D[S][i]
                 final_path = (0,)+ (i,) + S +(0,)
 
-    #print(D) 
     return final_path           
 
 def MST(points):
-    
     result = []
     result.append(points[0])
     points.remove(points[0])
     tree = []
 
- 
     while(len(points)!=0):
-        
         min_dis = float("inf")
         start =[]
         end=[]
         for i in range(0,len(result)) :
                 for j in range(0,len(points)):
-                   
                     distance =  round(math.dist(result[i], points[j]))
                     if distance < min_dis:
                         min_dis=distance
-
                         start = result[i]
                         end = points[j]
-                        
-
         result.append(end)
         points.remove(end)
         tree.append((start,end,min_dis))
+
     print(tree)
     return(tree)
 
