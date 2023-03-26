@@ -1,11 +1,10 @@
 INF8775 TP2:
-	-[x] Implémenter l'algorithme glouton;
-	-[x] Implémenter l'algorithme de programmation dynamique;
-	-[ ] Implémenter l'algorithme approximatif (l-relatif);
-	-[ ] Pour chacun des algorithmes : 
-		-[ ] Mesurer le temps d'exécution;
-		-[ ] Mesurer la longueur minimale du tour à travers les villes;
-	-[ ]
-	-[ ] Faire une analyse asymptotique du temps de calcul pour chaque algorithme;
-	-[ ] Confirmer et/ou préciser l'analyse asymptotique théorique des algorithmes avec une méthode hybride;
-	-[ ] Indiquez sous quelles conditions vous utiliseriez chaque algorithme; 
+	[/] Implémenter l'algorithme glouton;
+	[/] Implémenter l'algorithme de programmation dynamique;
+	[/] Implémenter l'algorithme approximatif (l-relatif);
+	[/] Pour chacun des algorithmes : 
+		[ ] Mesurer le temps d'exécution;
+		[ ] Mesurer la longueur minimale du tour à travers les villes;
+		[ ] Faire une analyse asymptotique du temps de calcul;
+		[ ] Confirmer et/ou préciser l'analyse asymptotique théorique des algorithmes avec une méthode hybride;
+	[ ] Indiquez sous quelles conditions vous utiliseriez chaque algorithme; 
