@@ -47,54 +47,54 @@ if __name__ == "__main__":
         nb = random.randint(0, nb_points - 1)
         firstPoint = points[nb]
         s.append(firstPoint)
-        points.remove(firstPoint)
-        while len(points) != 0:
+        points.remove(firstPoint) # O(n)
+        while len(points) != 0: # O(n)
             min = float("inf")
             minPoint = []
-            for point in points:
+            for point in points: # O(n)
                 distance = round(math.dist(s[len(s) - 1], point))
                 if distance < min:
                     min = distance
                     minPoint = point
             s.append(minPoint)
-            points.remove(minPoint)
+            points.remove(minPoint) # O(n)
         s.append(firstPoint)
         return s
 
     # dynamic programmation
     def dynProg(points):
 
-        # matrix of distances
+        # matrix of distances O(n^2)
         dis = [
             [round(math.dist(points[i], points[j])) for j in range(len(points))]
             for i in range(len(points))
         ]
 
-        # list of vertices to find combination
+        # list of vertices to find combination O(n)
         vertex = []
         for i in range(1, len(points)):
             vertex.append(i)
 
-        # list of all possible combinations
+        # list of all possible combinations O(2^n)
         final_comb = []
         for num in range(0, len(points) - 1):
             combination = list(combinations(vertex, num))
             final_comb += combination
 
-        # dict of S, i and D[i][s]
+        # dict of S, i and D[i][s] O(2^n)
         D = {j: {i: float("inf") for i in range(1, len(points))} for j in final_comb}
 
         min_path_dis = float("inf")
         final_path = (0,)
 
-        # calculate D[S][i]
-        for S in D:
-            for i in D[S]:
-                if len(S) == 0:
-                    D[S][i] = dis[0][i]
+        # calculate D[S][i] 
+        for S in D : # O(2^n), car le nombre de sous-ensembles possibles d'un ensemble n est 2^n
+            for i in D[S] : # O(n), car on itère sur chaque sommet                                                      
+                if len(S) == 0:                                                     
+                    D[S][i] = dis[0][i]                                             
                 else:
-                    min = float("inf")
-                    for j in S:
+                    min = float("inf")                                              
+                    for j in S: # O(n), car on itère sur chaque sommet                                                     
                         if dis[i][j] == 0:
                             min = None
                         elif min and (
@@ -111,7 +111,6 @@ if __name__ == "__main__":
                 ):
                     min_path_dis = dis[1][i] + D[S][i]
                     final_path = (0,) + (i,) + S + (0,)
-
         return final_path
 
     def findEdges(vertices):
@@ -157,20 +156,20 @@ if __name__ == "__main__":
     # The main function to construct MST
     # using Kruskal's algorithm
     # From : https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/
-    def kruskalMST(points):
+    def kruskalMST(points,edges):
 
         # This will store the resultant MST
         result = []
 
         # Vertices
-        vertices = []
-        index = 0
-        for point in points:
-            vertices.append((index, point))
-            index = index + 1
+        # vertices = []
+        # index = 0
+        # for point in points:
+        #     vertices.append((index, point))
+        #     index = index + 1
 
         # Edges
-        edges = findEdges(vertices)
+        #edges = findEdges(vertices)
 
         # An index variable, used for sorted edges
         i = 0
@@ -208,36 +207,11 @@ if __name__ == "__main__":
                 union(parent, rank, x, y)
 
             minimumCost = 0
-            # print("Edges in the constructed MST")
             for u, v, weight in result:
                 minimumCost += weight
-                # print("%d -- %d == %d" % (u[0], v[0], weight))
-            # print("Minimum Spanning Tree", minimumCost)
-
+            
         return result
 
-    """ def MST(points):
-        result = []
-        result.append(points[0])
-        points.remove(points[0])
-        tree = []
-
-        while len(points) != 0:
-            min_dis = float("inf")
-            start = []
-            end = []
-            for i in range(0, len(result)):
-                for j in range(0, len(points)):
-                    distance = round(math.dist(result[i], points[j]))
-                    if distance < min_dis:
-                        min_dis = distance
-                        start = result[i]
-                        end = points[j]
-            result.append(end)
-            points.remove(end)
-            tree.append((start, end, min_dis))
-
-        return tree """
 
     # Inspired by :
     # https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
@@ -247,31 +221,29 @@ if __name__ == "__main__":
         # Create a set to store visited vertices
         if visited is None:
             visited = []
-
+        
         # Mark the current node as visited
         # and print it
         visited.append(start)
-        ##print("Visite : ", start)
 
-        unvisited = []
         for edge in mst:
+
             if edge[0] == start and edge[1] not in visited:
                 preOrder(mst, edge[1], visited)
-            elif edge[0] not in visited:
-                unvisited.append(edge[0])
-
-        for vertex in unvisited:
-            preOrder(mst, vertex, visited)
+            elif edge[1] == start and edge[0] not in visited:
+                preOrder(mst, edge[0], visited)
 
         return visited
 
     # approximative
-    def approx(points):
-        mstResult = kruskalMST(points)
+    def approx(points,edges):
+        
+        mstResult = kruskalMST(points,edges)
         # select random starting point
-        startIndex = random.randint(0, len(initialPoints) - 2)
+        startIndex = random.randint(0, len(points)-2)
         preOrderResult = preOrder(mstResult, mstResult[startIndex][0])
         preOrderResult.append(preOrderResult[0])
+ 
         return preOrderResult
 
     # function to read coordinate points of a file,
@@ -321,66 +293,33 @@ if __name__ == "__main__":
         end = time.time()
 
     elif algo == "approx":
-
+        vertices = []
+        index = 0
+        for point in graph:
+            vertices.append((index, point))
+            index = index + 1
+        edges = findEdges(vertices)
         start = time.time()
-        result_approx = approx(graph)
+        result_approx = approx(graph,edges)
         end = time.time()
         result = [tupl[0] for tupl in result_approx]
         if result[1] > result[len(result) - 2]:
             result.reverse()
+        
+        # total_dis = 0
+        # for i in range(len(result_approx)-3):  
+        #     total_dis+= round(math.dist(result_approx[i][1], result_approx[i+1][1]))
+        # print(total_dis)    
 
     if args.result:
         ## display
         for vertex in result:
             print(vertex)
 
+
+
     if args.time:
         # display of execution time in ms
         print((end - start) * 1000)
 
-    ####### test setup #######
-    activateGreedy = False
-    activateDisplay = False
-    activateDynamic = False
-    activateApproximative = False
-    activateTemp = False
 
-    ####### greedy #######
-    if activateGreedy:
-        initialPoints = readFile("N5_0")
-        print("Initial points :", initialPoints)
-        greedResult = greedy(initialPoints)
-        print("greedy :", greedResult)
-
-    ####### display #######
-    if activateDisplay:
-        initialPoints = readFile("N5_0")
-        display(initialPoints, greedResult)
-
-    ####### dynamic prog #######
-    if activateDynamic:
-        initialPoints = readFile("N5_0")
-        print("Initial points :", initialPoints)
-        dynProgResult = dynProg(initialPoints)
-        print("dynamic prog :", dynProgResult)
-
-    ####### approximating prog #######
-    if activateApproximative:
-        initialPoints = readFile("N5_0")
-        print("Initial points :", initialPoints)
-        startIndex = random.randint(0, len(initialPoints) - 2)
-        print("Starting index : ", startIndex)
-        mst = MST(initialPoints)
-        print("MST : ", mst)
-        print("Starting city : ", mst[startIndex])
-        preOrderResult = preOrder(mst, mst[startIndex])
-        print("Pre-order Result : ", preOrderResult)
-
-    ####### temp #######
-    if activateTemp:
-        initialPoints = readFile("N5_0")
-        print("Initial points : ", initialPoints)
-        mstResult = kruskalMST(initialPoints)
-        print("MST : ", mstResult)
-        preOrderResult = preOrder(mstResult, mstResult[0][0])
-        print("Pre-order : ", preOrderResult)
