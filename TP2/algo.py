@@ -291,6 +291,8 @@ if __name__ == "__main__":
     start = 0.0
     end=0.0
 
+    result = []
+
     if algo == "glouton":
 
         start = time.time()
@@ -325,6 +327,8 @@ if __name__ == "__main__":
     if args.time:
         # display of execution time in ms
         print((end - start)*1000)
+
+
 
     ####### test setup #######
     activateGreedy = False
