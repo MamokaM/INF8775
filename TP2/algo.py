@@ -9,21 +9,36 @@ import time
 if __name__ == "__main__":
     # Parse arguments
     parser = argparse.ArgumentParser()
-    
-    parser.add_argument("-a", "--algorithm", required=True, default = 0, type=str,
-                        help="Define which algorithm will be used")
-    parser.add_argument("-e", "--graph", required=True, type=str,
-                        help="Define the path of the graph")
-    parser.add_argument("-p", "--result", required=False, action ='store_true',
-                        help="Desplay indexes of path")
-    parser.add_argument("-t", "--time", required=False, action ='store_true',
-                        help="Desplay algorithm time")                                            
- 
-    args = parser.parse_args()  
-    
+
+    parser.add_argument(
+        "-a",
+        "--algorithm",
+        required=True,
+        default=0,
+        type=str,
+        help="Define which algorithm will be used",
+    )
+    parser.add_argument(
+        "-e", "--graph", required=True, type=str, help="Define the path of the graph"
+    )
+    parser.add_argument(
+        "-p",
+        "--result",
+        required=False,
+        action="store_true",
+        help="Display indexes of path",
+    )
+    parser.add_argument(
+        "-t",
+        "--time",
+        required=False,
+        action="store_true",
+        help="Display algorithm time",
+    )
+
+    args = parser.parse_args()
     algo = args.algorithm
     graph_name = args.graph
-
 
     # greedy
     def greedy(points):
@@ -45,7 +60,6 @@ if __name__ == "__main__":
             points.remove(minPoint)
         s.append(firstPoint)
         return s
-
 
     # dynamic programmation
     def dynProg(points):
@@ -90,12 +104,15 @@ if __name__ == "__main__":
                     D[S][i] = min
 
                 # find final path
-                if (len(S) == len(points) - 2) and (D[S][i] != None) and dis[1][i] + D[S][i] < min_path_dis :
+                if (
+                    (len(S) == len(points) - 2)
+                    and (D[S][i] != None)
+                    and dis[1][i] + D[S][i] < min_path_dis
+                ):
                     min_path_dis = dis[1][i] + D[S][i]
                     final_path = (0,) + (i,) + S + (0,)
 
         return final_path
-
 
     def findEdges(vertices):
         edges = []
@@ -108,7 +125,6 @@ if __name__ == "__main__":
                         edges.append((row, col, round(math.dist(row[1], col[1]))))
         return edges
 
-
     # A utility function to find set of an element i
     # (truly uses path compression technique)
     # From : https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/
@@ -119,7 +135,6 @@ if __name__ == "__main__":
         if parent[i] != i:
             parent[i] = findParent(parent, parent[i])
         return parent[i]
-
 
     # A function that does union of two sets of x and y
     # (uses union by rank)
@@ -138,7 +153,6 @@ if __name__ == "__main__":
         else:
             parent[y] = x
             rank[x] += 1
-
 
     # The main function to construct MST
     # using Kruskal's algorithm
@@ -194,14 +208,13 @@ if __name__ == "__main__":
                 union(parent, rank, x, y)
 
             minimumCost = 0
-            #print("Edges in the constructed MST")
+            # print("Edges in the constructed MST")
             for u, v, weight in result:
                 minimumCost += weight
-                #print("%d -- %d == %d" % (u[0], v[0], weight))
-            #print("Minimum Spanning Tree", minimumCost)
+                # print("%d -- %d == %d" % (u[0], v[0], weight))
+            # print("Minimum Spanning Tree", minimumCost)
 
         return result
-
 
     """ def MST(points):
         result = []
@@ -226,11 +239,10 @@ if __name__ == "__main__":
 
         return tree """
 
-
+    # Inspired by :
+    # https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
+    # https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
     def preOrder(mst, start, visited=None):
-        # Inspired by :
-        # https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
-        # https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
 
         # Create a set to store visited vertices
         if visited is None:
@@ -250,16 +262,17 @@ if __name__ == "__main__":
 
         for vertex in unvisited:
             preOrder(mst, vertex, visited)
-        
-   
+
         return visited
 
-    # approximative 
+    # approximative
     def approx(points):
         mstResult = kruskalMST(points)
-        preOrderResult = preOrder(mstResult, mstResult[0][0])
+        # select random starting point
+        startIndex = random.randint(0, len(initialPoints) - 2)
+        preOrderResult = preOrder(mstResult, mstResult[startIndex][0])
         preOrderResult.append(preOrderResult[0])
-        return  preOrderResult 
+        return preOrderResult
 
     # function to read coordinate points of a file,
     # put them in a list
@@ -273,7 +286,6 @@ if __name__ == "__main__":
             points.append([eval(i) for i in lst])
         return points
 
-
     def displayGreedy(initialP, algoResult):
         result = [initialP.index(i) for i in algoResult]
         index_0 = result.index(0)
@@ -282,14 +294,14 @@ if __name__ == "__main__":
             result_0.reverse()
         return result_0
 
-    ##### desplay with script #####
+    ##### display with script #####
 
-    # readgraoh from file
+    # read graph from file
     graph = readFile(graph_name)
 
-    #initialise time variables
+    # initialise time variables
     start = 0.0
-    end=0.0
+    end = 0.0
 
     result = []
 
@@ -297,38 +309,34 @@ if __name__ == "__main__":
 
         start = time.time()
         result_greedy = greedy(graph)
-        end = time.time() # calculate  execution time of algorithm
+        end = time.time()  # calculate  execution time of algorithm
 
         graph = readFile(graph_name)
-        result = displayGreedy(graph,result_greedy )
-        
+        result = displayGreedy(graph, result_greedy)
+
     elif algo == "progdyn":
-        
+
         start = time.time()
         result = dynProg(graph)
         end = time.time()
 
-       
     elif algo == "approx":
 
         start = time.time()
         result_approx = approx(graph)
         end = time.time()
-        result = [ tupl[0]for tupl in result_approx]
+        result = [tupl[0] for tupl in result_approx]
         if result[1] > result[len(result) - 2]:
             result.reverse()
-       
 
-    if args.result :
-        ## desplay
+    if args.result:
+        ## display
         for vertex in result:
             print(vertex)
 
     if args.time:
         # display of execution time in ms
-        print((end - start)*1000)
-
-
+        print((end - start) * 1000)
 
     ####### test setup #######
     activateGreedy = False
@@ -336,7 +344,6 @@ if __name__ == "__main__":
     activateDynamic = False
     activateApproximative = False
     activateTemp = False
-
 
     ####### greedy #######
     if activateGreedy:
@@ -368,7 +375,6 @@ if __name__ == "__main__":
         print("Starting city : ", mst[startIndex])
         preOrderResult = preOrder(mst, mst[startIndex])
         print("Pre-order Result : ", preOrderResult)
-
 
     ####### temp #######
     if activateTemp:
