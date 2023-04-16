@@ -1,0 +1,18 @@
+
+# prioriser les formes en losange 
+                      ■   
+                    ■ ■ ■  
+                  ■ ■ ■ ■ ■ 
+                ■ ■ ■ ■ ■ ■ ■
+                  ■ ■ ■ ■ ■ 
+                    ■ ■ ■  
+                      ■ 
+
+
+########### justifications ###########
+- Utilisation de numpy pour les matrices (au lieu de list) car elle a beacoup de fonctions optimisées
+- Commencer pas placer les m enclos du sous ensemble le plus proche possible
+      - Placer le plus grand au milieu et les autres autour pour maxmiser les surfaces qui se touchent 
+        et minimiser la distance entre les enclos
+
+    
