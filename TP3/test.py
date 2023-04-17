@@ -57,3 +57,13 @@
 #     #         zone[i+index,j+index] = max(abs(center - (i+index)), abs(center - (j+index)))
 
 #     # print(zone)
+
+
+# def verification_zone(coordinate,k):
+#     combs_theme = combinations(coordinate,2)
+#     for paire in combs_theme:
+#         lenght = distance(paire[0][0], paire[0][1], paire[1][0], paire[1][0])
+#         if lenght > k :
+#             print(paire)
+#             print("oop bigger than")
+#             break;
