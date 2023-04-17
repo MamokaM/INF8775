@@ -67,3 +67,5 @@
 #             print(paire)
 #             print("oop bigger than")
 #             break;
+
+#sub_zone[row:5-row, col:5-col] = enclo
