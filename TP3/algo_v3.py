@@ -1,4 +1,5 @@
 import numpy as np
+import argparse
 
 # enclosure class
 
@@ -158,82 +159,83 @@ def readFile(file):
     return enclosures_number, subset_size, max_distance, subset, sizes, weights
 
 
-# main
-print()
-print("####################")
-print("READING FILE")
-print("####################")
-print()
+################ main script #######################
 
-enclosures_number, subset_size, max_distance, subset, sizes, weights = readFile(
-    "ex_n10_m5.txt"
-)
+if __name__ == "__main__":
 
-print("Enclosure number: " + str(enclosures_number))
-print("Subset size: " + str(subset_size))
-print("Max distance: " + str(max_distance))
-print("Subset: " + str(subset))
-print("Sizes: " + str(sizes))
-print("Weights: " + str(weights))
+     # Parse arguments
+    parser = argparse.ArgumentParser()
 
+    parser.add_argument("-e", "--file", required=True, type=str, help="Define the path of the exemplaire ")
 
-# initialise enclosures
-print()
-print("####################")
-print("INITIALIZING ENCLOSURES")
-print("####################")
-print()
-
-enclosures = initialiseEnclosures(subset, sizes, weights)
-for enclosure in enclosures:
-    print(
-        "Enclosure ID: "
-        + str(enclosure.id)
-        + " in subset ? : "
-        + str(enclosure.is_in_subset)
+    parser.add_argument(
+        "-p",
+        "--option",
+        required=False,
+        action="store_true",
+        help="Display new best solution",
     )
-    print("Enclosure Total Weight: " + str(enclosure.calculateTotalWeight()))
 
-# placing enclosures
-print()
-print("####################")
-print("PLACING STARTING POINTS")
-print("####################")
-print()
+    args = parser.parse_args()
+    file_name = args.file
 
-# select first enclosure and set position
-visited_points = []
-firstEnclosure = selectFirstEnclosure(enclosures)
-firstEnclosure.points.append((0, 0))
-visited_points.append((0, 0))
+    # read file
+    enclosures_number, subset_size, max_distance, subset, sizes, weights = readFile(file_name)
 
-generated_enclosures = []
-generated_enclosures.append(firstEnclosure)
+    # initialise enclosures
+    enclosures = initialiseEnclosures(subset, sizes, weights)
 
-# select enclosures from subset and set position
-for i in range(0, subset_size - 1):
-    nextEnclosure = firstEnclosure.findHeaviestNeighborPossible(enclosures, True)
-    nextEnclosure.setStartingPoint(visited_points)
-    generated_enclosures.append(nextEnclosure)
+    # select first enclosure and set position
+    visited_points = []
+    firstEnclosure = selectFirstEnclosure(enclosures)
+    firstEnclosure.points.append((0, 0))
+    visited_points.append((0, 0))
 
-# select enclosures from outside subset and set position
-for i in range(0, enclosures_number - subset_size):
-    nextEnclosure = firstEnclosure.findHeaviestNeighborPossible(enclosures, False)
-    nextEnclosure.setStartingPoint(visited_points)
-    generated_enclosures.append(nextEnclosure)
+    generated_enclosures = []
+    generated_enclosures.append(firstEnclosure)
 
-for enclosure in generated_enclosures:
-    print(enclosure.id, enclosure.points)
+    # select enclosures from subset and set position
+    for i in range(0, subset_size - 1):
+        nextEnclosure = firstEnclosure.findHeaviestNeighborPossible(enclosures, True)
+        nextEnclosure.setStartingPoint(visited_points)
+        generated_enclosures.append(nextEnclosure)
 
-# grow cells
-for i in range(0, max(sizes)):
-    for enclosure in generated_enclosures:
-        enclosure.grow(visited_points)
+    # select enclosures from outside subset and set position
+    for i in range(0, enclosures_number - subset_size):
+        nextEnclosure = firstEnclosure.findHeaviestNeighborPossible(enclosures, False)
+        nextEnclosure.setStartingPoint(visited_points)
+        generated_enclosures.append(nextEnclosure)
 
+    # grow cells
+    for i in range(0, max(sizes)):
+        for enclosure in generated_enclosures:
+            enclosure.grow(visited_points)
 
-# write solution
-with open("sol_" + str(enclosures_number) + "_" + str(subset_size) + ".txt", "w") as f:
-    for enclosure in enclosures:
-        for point in enclosure.points:
-            f.write(str(point[0]) + " " + str(point[1]) + " ")
-        f.write("\n")
+   
+    # # write solution
+    with open("sol_" + str(enclosures_number) + "_" + str(subset_size) + ".txt", "w") as f:
+        for enclosure in enclosures:
+            for point in enclosure.points:
+                f.write(str(point[0]) + " " + str(point[1]) + " ")
+            f.write("\n")
+        
+
+    # NOTE : this is not usefull for our algorithm but we still implemented it since that is what was asked 
+    if args.option:
+        
+        while(True):
+            for enclosure in enclosures:
+                for point in enclosure.points:
+                    print(point[0], point[1], end='')
+                print()
+            print()
+    else:
+
+        for enclosure in enclosures:
+            for point in enclosure.points:
+                print(point[0], point[1], end='')
+            print()
+
+        while True:
+            continue
+
